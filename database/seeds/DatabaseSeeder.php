@@ -11,6 +11,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\Contact::class, 10)->create();
+        factory(\App\Models\Message::class, 10)->create();
     }
 }

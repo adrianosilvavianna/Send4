@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Contact;
+use App\Models\Message;
+use App\Policies\MessagePolice;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -13,7 +16,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        //
     ];
 
     /**
@@ -25,6 +28,5 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
     }
 }

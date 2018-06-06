@@ -2,40 +2,38 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\MessageRequest;
+use App\Http\Resources\MessageResource;
+use App\Models\Contact;
+use App\Models\Message;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class MessageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
-     * Show the form for creating a new resource.
+     * List messages from contact
      *
-     * @return \Illuminate\Http\Response
+     * @param Contact $contact
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function create()
+    public function index(Contact $contact)
     {
-        //
+        return MessageResource::collection($contact->Messages);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Contact $contact
+     * @param MessageRequest $request
+     * @return MessageRequest
      */
-    public function store(Request $request)
+    public function store(MessageRequest $request, Contact $contact)
     {
-        //
+        $message = $contact->Messages()->create($request->input());
+        return new MessageResource($message);
     }
 
     /**
@@ -44,21 +42,11 @@ class MessageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Message $message)
     {
-        //
+        return new MessageResource($message);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -67,19 +55,27 @@ class MessageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(MessageRequest $request, Contact $contact, Message $message)
     {
-        //
+        if($contact->authorize($message)){
+            $message = $message->update($request->input());
+            return response()->json($message, 200);
+        }
+        return response()->json(['message' => 'Este contato nao tem permissao para alterar essa menssagem'], 401);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Message $message
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy(Contact $contact, Message $message)
     {
-        //
+        if($contact->authorize($message)) {
+            return response()->json($message->delete(), 200);
+        }
+        return response()->json(['message' => 'Este contato não tem permissão para auterar essa menssagem'], 401);
     }
 }

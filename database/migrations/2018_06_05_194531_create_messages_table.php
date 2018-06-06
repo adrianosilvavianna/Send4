@@ -18,6 +18,7 @@ class CreateMessagesTable extends Migration
             $table->string('description');
             $table->unsignedInteger('contact_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
