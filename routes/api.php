@@ -13,10 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware(['auth:api'])->group(function (){
+Route::name('contact.')->group(function (){
 
-    Route::resources(['contacts' =>           'ContactController']);
-    Route::resources(['messages' =>           'MessageController']);
+    Route::apiResource('contacts',                     'ContactController');
+    Route::apiResource('contacts/{contact}/messages',  'MessageController');
 
 });
 

@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\ContactRequest;
+use App\Http\Resources\ContactResource;
+use App\Models\Contact;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ContactController extends Controller
 {
+    private $contact;
+
+    public function __construct(Contact $contact)
+    {
+        $this->contact = $contact;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,17 +24,7 @@ class ContactController extends Controller
      */
     public function index()
     {
-
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return ContactResource::collection($this->contact->all());
     }
 
     /**
@@ -33,53 +33,51 @@ class ContactController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ContactRequest $request)
     {
-        //
+        try{
+            $contact = $this->contact->create($request->input());
+            return new ContactResource($contact);
+        }catch (\Exception $e){
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
+        }
     }
 
     /**
+     * @param $id
+     * @return ContactResource
      * Display the specified resource.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $contact = $this->contact->findOrFail($id);
+        return new ContactResource($contact);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param ContactRequest $request
+     * @param Contact $contact
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(ContactRequest $request, Contact $contact)
     {
-        //
+        $contact = $contact->update($request->input());
+        return response()->json($contact, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Contact $contact
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy(Contact $contact)
     {
-        //
+        return response()->json($contact->delete(), 200);
     }
 }
