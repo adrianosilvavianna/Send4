@@ -58,6 +58,5 @@ class ContactTest extends TestCase
         $contact->delete();
         $contact->refresh();
         $this->assertTrue($contact->trashed());
-        $this->assertSoftDeleted($this->database, $this->getArrayCompareDatabase($contact));
     }
 }

@@ -30,3 +30,10 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 command - phpunit
 
+## Collection Postman
+
+https://documenter.getpostman.com/view/4160208/RWEZTiJf
+
+## Migrate and Seed
+
+php artisan migrate --seed

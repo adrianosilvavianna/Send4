@@ -50,6 +50,5 @@ class MessageTest extends TestCase
         $message->delete();
         $message->refresh();
         $this->assertTrue($message->trashed());
-        $this->assertSoftDeleted($this->database, $this->getArrayCompareDatabase($message));
     }
 }
