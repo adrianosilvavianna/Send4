@@ -15,8 +15,10 @@ use Illuminate\Http\Request;
 
 Route::name('contact.')->group(function (){
 
-    Route::apiResource('contacts',                     'ContactController');
-    Route::apiResource('contacts/{contact}/messages',  'MessageController');
+    Route::apiResources([
+    	'contacts' =>                     'ContactController',
+    	'contacts/{contact}/messages' =>  'MessageController'
+    ]);
 
 });
 
